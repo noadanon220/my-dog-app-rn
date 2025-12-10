@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ICONS } from '../../assets/icons';
-import { useAppData } from '../context/AppDataContext';
+import { Typography, useAppData } from '../context/AppDataContext';
 
 const isToday = (dateString: string) => {
     const date = new Date(dateString);
@@ -27,9 +27,13 @@ const isToday = (dateString: string) => {
 const QUICK_ACTIONS = [
     { id: 'walk', label: 'Walk', icon: 'walk', color: '#4CAF50', bgColor: '#E8F5E9' },
     { id: 'food', label: 'Food', icon: 'food', color: '#FF9800', bgColor: '#FFF3E0' },
-    { id: 'poop', label: 'Poop', icon: 'poop', color: '#607D8B', bgColor: '#ECEFF1' },
+    // Poop action with brown shades (Updated previously)
+    { id: 'poop', label: 'Poop', icon: 'poop', color: '#743D2B', bgColor: '#EFE5DD' },
     { id: 'weight', label: 'Weight', icon: 'default', color: '#9C27B0', bgColor: '#F3E5F5' },
-    { id: 'vet', label: 'Vet', icon: 'vet', color: '#F44336', bgColor: '#FFEBEE' },
+    // Updated Vet action: Red shades
+    // Icon: Medical Red (#D32F2F)
+    // Background: Very Light Red (#FFEBEE)
+    { id: 'vet', label: 'Vet', icon: 'vet', color: '#D32F2F', bgColor: '#FFEBEE' },
 ];
 
 export default function HomeScreen() {
@@ -138,7 +142,7 @@ export default function HomeScreen() {
             <View style={styles.header}>
                 <View>
                     <Text style={[styles.greetingText, { color: theme.text }]}>Good Morning, Noa 👋</Text>
-                    <Text style={styles.dateText}>
+                    <Text style={[styles.dateText, { color: '#888' }]}>
                         {new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'short' })}
                     </Text>
                 </View>
@@ -225,7 +229,6 @@ export default function HomeScreen() {
 
             {/* --- Floating Menu Overlay & Container --- */}
 
-            {/* 1. Transparent Overlay to close menu when clicking outside */}
             {isMenuVisible && (
                 <TouchableOpacity
                     style={styles.menuOverlay}
@@ -234,7 +237,6 @@ export default function HomeScreen() {
                 />
             )}
 
-            {/* 2. The Menu Itself (Positioned above FAB) */}
             {isMenuVisible && (
                 <View style={[styles.menuContainer, { backgroundColor: theme.card, shadowColor: theme.text }]}>
                     <Text style={[styles.menuHeader, { color: theme.subText }]}>Quick Log</Text>
@@ -260,7 +262,6 @@ export default function HomeScreen() {
                 </View>
             )}
 
-            {/* 3. Floating Action Button (Always on top) */}
             <TouchableOpacity
                 style={[
                     styles.fab,
@@ -280,8 +281,10 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
     container: { flex: 1 },
     header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 15 },
-    greetingText: { fontSize: 22, fontWeight: '700' },
-    dateText: { fontSize: 14, color: '#888', marginTop: 2 },
+
+    greetingText: { ...Typography.header },
+    dateText: { ...Typography.body, marginTop: 2 },
+
     notificationButton: { padding: 8, borderRadius: 20 },
 
     sectionContainer: { marginTop: 20, paddingHorizontal: 20 },
@@ -297,13 +300,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
         paddingVertical: 10, borderRadius: 12, gap: 5
     },
-    profileLinkText: { fontSize: 14, fontWeight: '600' },
+    profileLinkText: { ...Typography.body, fontWeight: '600' },
 
-    sectionTitle: { fontSize: 18, fontWeight: '700', marginBottom: 15 },
+    sectionTitle: { ...Typography.sectionTitle, marginBottom: 15 },
+
     cardsRow: { flexDirection: 'row', gap: 15 },
     summaryCard: { flex: 1, borderRadius: 16, padding: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8, elevation: 3, borderWidth: 1 },
     cardHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 10, gap: 8 },
-    cardLabel: { fontSize: 14, fontWeight: '600', color: '#666' },
+
+    cardLabel: { ...Typography.cardTitle, color: '#666' },
+
     cardValue: { fontSize: 24, fontWeight: '800' },
     cardUnit: { fontSize: 14, fontWeight: '500', color: '#888' },
     cardSubtext: { fontSize: 12, color: '#999', marginTop: 4, marginBottom: 10 },
@@ -317,14 +323,15 @@ const styles = StyleSheet.create({
     activityCard: { flexDirection: 'row', alignItems: 'center', padding: 12, borderRadius: 12, borderWidth: 1 },
     activityIconContainer: { width: 44, height: 44, borderRadius: 12, justifyContent: 'center', alignItems: 'center', marginRight: 15 },
     activityContent: { flex: 1 },
-    activityTitle: { fontSize: 16, fontWeight: '600' },
-    activitySubtitle: { fontSize: 13, marginTop: 2 },
-    activityTime: { fontSize: 12, fontWeight: '500' },
+
+    activityTitle: { ...Typography.cardTitle },
+    activitySubtitle: { ...Typography.caption, marginTop: 2 },
+    activityTime: { ...Typography.caption, fontWeight: '500' },
+
     emptyState: { alignItems: 'center', paddingVertical: 20 },
     emptyStateText: { color: '#999', fontSize: 16, marginBottom: 5 },
     emptyStateSubtext: { color: '#ccc', fontSize: 14 },
 
-    // FAB Styles
     fab: {
         position: 'absolute',
         bottom: 20,
@@ -339,22 +346,21 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 8,
         elevation: 5,
-        zIndex: 20 // High zIndex so it stays on top of the overlay
+        zIndex: 20
     },
 
-    // Floating Menu Styles
     menuOverlay: {
         position: 'absolute',
         top: 0,
         bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: 'rgba(0,0,0,0.2)', // Slightly dimmed background
-        zIndex: 10 // Below the FAB but above content
+        backgroundColor: 'rgba(0,0,0,0.2)',
+        zIndex: 10
     },
     menuContainer: {
         position: 'absolute',
-        bottom: 90, // Positioned above the FAB (60 height + 20 bottom + 10 margin)
+        bottom: 90,
         right: 20,
         width: 220,
         borderRadius: 20,
@@ -363,7 +369,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.15,
         shadowRadius: 10,
         elevation: 10,
-        zIndex: 15 // Above overlay
+        zIndex: 15
     },
     menuHeader: { fontSize: 12, fontWeight: '700', paddingHorizontal: 16, marginBottom: 5, marginTop: 5, textTransform: 'uppercase' },
     menuItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 16 },
