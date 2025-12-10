@@ -1,6 +1,24 @@
 import React, { createContext, ReactNode, useContext, useState } from 'react';
 import { ActivityLog, Dog, LogType, User } from '../types';
 
+// --- Typography Definitions (Based on HomeScreen) ---
+export const Typography = {
+    // Main Headers (e.g., "Good Morning")
+    header: { fontSize: 22, fontWeight: '700' as '700' },
+
+    // Section Headers (e.g., "Daily Goals", "Recent Activity")
+    sectionTitle: { fontSize: 18, fontWeight: '700' as '700' },
+
+    // Card Titles (e.g., "Walk", "Food")
+    cardTitle: { fontSize: 16, fontWeight: '600' as '600' },
+
+    // Regular Body Text
+    body: { fontSize: 14, fontWeight: '500' as '500' },
+
+    // Small Text (Dates, secondary notes)
+    caption: { fontSize: 12, fontWeight: '400' as '400' }
+};
+
 // --- Theme Definitions ---
 export const Colors = {
     light: {

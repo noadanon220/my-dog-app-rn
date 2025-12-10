@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import MapView, { Marker, PROVIDER_DEFAULT } from 'react-native-maps';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Park, useAppData } from '../context/AppDataContext';
+import { Park, Typography, useAppData } from '../context/AppDataContext';
 
 export default function ExploreScreen() {
     const { parks, dogs, addCheckIn, checkIns, theme, isDarkMode } = useAppData();
@@ -317,7 +317,7 @@ export default function ExploreScreen() {
 
 const styles = StyleSheet.create({
     header: { paddingHorizontal: 20, paddingVertical: 15, borderBottomWidth: 1 },
-    headerTitle: { fontSize: 28, fontWeight: '800' },
+    headerTitle: { ...Typography.header },
 
     contentContainer: { flex: 1, position: 'relative' },
 
@@ -337,20 +337,20 @@ const styles = StyleSheet.create({
     ratingBadge: { position: 'absolute', top: 10, right: 10, backgroundColor: 'rgba(0,0,0,0.7)', borderRadius: 12, paddingHorizontal: 8, paddingVertical: 4, flexDirection: 'row', alignItems: 'center', gap: 4 },
     ratingText: { color: '#fff', fontSize: 10, fontWeight: '700' },
     parkCardContent: { padding: 12, justifyContent: 'center' },
-    parkCardTitle: { fontSize: 16, fontWeight: '700', marginBottom: 4 },
+    parkCardTitle: { ...Typography.cardTitle },
     distanceRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-    parkCardDistance: { fontSize: 13, fontWeight: '500' },
+    parkCardDistance: { ...Typography.caption, fontWeight: '500' },
 
     modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.3)', justifyContent: 'flex-end' },
     bottomSheet: { borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 20, paddingBottom: 40, maxHeight: '80%' },
     handleContainer: { alignItems: 'center', marginBottom: 15 },
     handle: { width: 40, height: 4, borderRadius: 2 },
     detailsHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 },
-    detailsTitle: { fontSize: 24, fontWeight: '800' },
-    detailsAddress: { fontSize: 15, marginTop: 4 },
+    detailsTitle: { ...Typography.header },
+    detailsAddress: { ...Typography.body, marginTop: 4 },
     closeButton: { padding: 8, borderRadius: 20 },
     divider: { height: 1, marginBottom: 20 },
-    sectionTitle: { fontSize: 18, fontWeight: '700', marginBottom: 15 },
+    sectionTitle: { ...Typography.sectionTitle, marginBottom: 15 },
     emptyStateContainer: { alignItems: 'center', marginVertical: 20, opacity: 0.7 },
     emptyText: { fontStyle: 'italic', marginTop: 10 },
     visitorsList: { marginBottom: 20 },
@@ -362,9 +362,9 @@ const styles = StyleSheet.create({
     checkInButton: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingVertical: 16, borderRadius: 16, gap: 10, marginTop: 10 },
     checkInButtonText: { color: '#fff', fontSize: 16, fontWeight: '700' },
     checkInDialog: { width: '85%', borderRadius: 24, padding: 24 },
-    dialogTitle: { fontSize: 22, fontWeight: '800', marginBottom: 5, textAlign: 'center' },
-    dialogSubtitle: { fontSize: 15, textAlign: 'center', marginBottom: 25 },
-    label: { fontSize: 14, fontWeight: '700', marginBottom: 10, textTransform: 'uppercase', opacity: 0.7 },
+    dialogTitle: { ...Typography.header, marginBottom: 5, textAlign: 'center' },
+    dialogSubtitle: { ...Typography.body, textAlign: 'center', marginBottom: 25 },
+    label: { ...Typography.cardTitle, marginBottom: 10, opacity: 0.7 },
 
     // Updated Dog Selector for Multi-Select
     dogSelector: { flexDirection: 'row', alignItems: 'center', padding: 8, paddingRight: 15, borderRadius: 20, marginRight: 10 },

@@ -3,8 +3,8 @@
 import ActivityIcon from './activity.svg';
 import FoodIcon from './coffee.svg';
 import WalkIcon from './map-pin.svg';
-import VetIcon from './thermometer.svg';
-import PoopIcon from './trash-2.svg';
+import PoopIcon from './poop.svg';
+import VetIcon from './vet.svg';
 
 export const ICONS = {
     walk: WalkIcon,

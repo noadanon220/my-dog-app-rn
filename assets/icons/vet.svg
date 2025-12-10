@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 512 512" width="24" height="24"
+	fill="none">
+	<g id="Paw">
+		<ellipse cx="176" cy="80" rx="40" ry="60" stroke="currentColor" stroke-width="35"
+			stroke-linecap="round" stroke-linejoin="round" />
+		<ellipse cx="60" cy="192" rx="40" ry="60" stroke="currentColor" stroke-width="35"
+			stroke-linecap="round" stroke-linejoin="round" />
+		<ellipse cx="336" cy="80" rx="40" ry="60" stroke="currentColor" stroke-width="35"
+			stroke-linecap="round" stroke-linejoin="round" />
+		<ellipse cx="452" cy="192" rx="40" ry="60" stroke="currentColor" stroke-width="35"
+			stroke-linecap="round" stroke-linejoin="round" />
+		<path
+			d="M214.626,484.267l18.199-7.628c7.13-2.989,14.96-4.64,23.175-4.64c8.216,0,16.045,1.651,23.176,4.64l18.198,7.627 C309.258,489.248,322.308,492,336,492c55.228,0,100-44.772,100-100c0-30.071-13.273-57.041-34.28-75.373l-45.125-39.379 c-4.507-3.928-8.421-8.518-11.591-13.619l-21.01-33.803C309.879,207.118,284.705,192,256,192s-53.879,15.118-67.994,37.827 l-21.01,33.803c-3.168,5.096-7.062,9.669-11.563,13.594l-45.153,39.403C89.273,334.959,76,361.929,76,392 c0,55.228,44.772,100,100,100C189.692,492,202.742,489.248,214.626,484.267z"
+			stroke="currentColor" stroke-width="35" stroke-linecap="round" stroke-linejoin="round" />
+		<line x1="256" y1="312" x2="256" y2="392" stroke="currentColor" stroke-width="35"
+			stroke-linecap="round" stroke-linejoin="round" />
+		<line x1="216" y1="352" x2="296" y2="352" stroke="currentColor" stroke-width="35"
+			stroke-linecap="round" stroke-linejoin="round" />
+	</g>
+</svg>

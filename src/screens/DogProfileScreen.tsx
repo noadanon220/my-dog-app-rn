@@ -15,7 +15,7 @@ import {
     TouchableWithoutFeedback,
     View
 } from 'react-native';
-import { useAppData } from '../context/AppDataContext';
+import { Typography, useAppData } from '../context/AppDataContext';
 
 // --- Constants & Mock Data ---
 const { width } = Dimensions.get('window');
@@ -100,9 +100,7 @@ export default function DogProfileScreen() {
         <View style={styles.detailsList}>
             <SectionHeader title="General Info" />
 
-            {/* Added Breed Row Here */}
             <DetailRow icon="paw-outline" label="Breed" value={dog.breed || 'Unknown'} />
-
             <DetailRow icon="qr-code-outline" label="Chip Number" value={dog.chipNumber || 'Not set'} />
             <DetailRow icon="calendar-outline" label="Birthday" value={dog.birthDate || 'Not set'} />
             <DetailRow icon="male-female-outline" label="Gender" value={`${dog.gender} • ${dog.isSterilized ? 'Neutered' : 'Intact'}`} />
@@ -247,7 +245,6 @@ export default function DogProfileScreen() {
 
                     <View style={styles.topActions}>
                         <View style={{ flex: 1 }} />
-                        {/* RESTORED: Direct Edit Button */}
                         <TouchableOpacity
                             style={[styles.editButton, { backgroundColor: theme.secondaryBg, borderColor: theme.cardBorder }]}
                             onPress={handleEditProfile}
@@ -328,38 +325,44 @@ const styles = StyleSheet.create({
     infoContainer: { marginTop: 25 },
     name: { fontSize: 26, fontWeight: '800', marginBottom: 2 },
     handle: { fontSize: 15, marginBottom: 8 },
-    bioText: { fontSize: 15, marginBottom: 15, lineHeight: 22 },
+    bioText: { ...Typography.body, marginBottom: 15, lineHeight: 22 },
     statsRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 20 },
-    statText: { fontSize: 14 },
+    statText: { ...Typography.body },
     statDivider: { marginHorizontal: 6 },
 
     tabBar: { flexDirection: 'row', borderBottomWidth: 1, marginBottom: 20 },
     tabItem: { paddingVertical: 14, marginRight: 25, borderBottomWidth: 3, borderBottomColor: 'transparent' },
-    tabText: { fontSize: 15, fontWeight: '600' },
+    tabText: { ...Typography.cardTitle },
     contentArea: { minHeight: 200 },
 
     detailsList: { marginTop: 0 },
-    sectionHeaderTitle: { fontSize: 14, fontWeight: '700', marginTop: 15, marginBottom: 10, textTransform: 'uppercase', letterSpacing: 0.5, opacity: 0.6 },
+
+    // Updated to match Home Screen styles
+    sectionHeaderTitle: {
+        ...Typography.sectionTitle,
+        marginTop: 15,
+        marginBottom: 10,
+    },
     detailRow: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14, borderBottomWidth: 1 },
     iconContainer: { width: 36, height: 36, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginRight: 15 },
     detailContent: { flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-    detailLabel: { fontSize: 15, fontWeight: '500' },
-    detailValue: { fontSize: 15 },
+    detailLabel: { ...Typography.cardTitle, fontWeight: '500' },
+    detailValue: { ...Typography.body },
 
     tabContentContainer: { paddingTop: 10 },
     vetCard: { borderRadius: 16, padding: 16, marginBottom: 25, borderWidth: 1 },
     vetHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 15 },
     vetIconBg: { width: 40, height: 40, borderRadius: 20, justifyContent: 'center', alignItems: 'center', marginRight: 12 },
-    vetName: { fontSize: 16, fontWeight: '700' },
-    vetSubtext: { fontSize: 12 },
+    vetName: { ...Typography.cardTitle },
+    vetSubtext: { ...Typography.caption },
     vetContactRow: { flexDirection: 'row', alignItems: 'center', marginTop: 8, gap: 10 },
-    vetContactText: { fontSize: 14 },
+    vetContactText: { ...Typography.body },
 
-    sectionTitle: { fontSize: 18, fontWeight: '700', marginBottom: 15 },
+    sectionTitle: { ...Typography.sectionTitle, marginBottom: 15 },
     vaccineRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 12, borderBottomWidth: 1 },
     vaccineInfo: {},
-    vaccineName: { fontSize: 16, fontWeight: '600', marginBottom: 4 },
-    vaccineDate: { fontSize: 12 },
+    vaccineName: { ...Typography.cardTitle, marginBottom: 4 },
+    vaccineDate: { ...Typography.caption },
     statusBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 10 },
     statusText: { fontSize: 12, fontWeight: '600' },
 
