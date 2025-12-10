@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import {
     Alert,
     Image,
-    SafeAreaView,
     ScrollView,
     StatusBar,
     StyleSheet,
@@ -12,10 +11,11 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-import { useAppData } from '../context/AppDataContext';
+// Changed: Import SafeAreaView from the context library (like in ExploreScreen)
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Typography, useAppData } from '../context/AppDataContext';
 
 export default function SettingsScreen() {
-    // 1. Grab theme and toggle function from context
     const { user, isDarkMode, toggleTheme, theme } = useAppData();
     const [language, setLanguage] = useState<'en' | 'he'>('en');
 
@@ -36,7 +36,6 @@ export default function SettingsScreen() {
         ]);
     };
 
-    // Helper Component for a Setting Row
     const SettingRow = ({
         icon, label, value, isSwitch = false, onPress
     }: {
@@ -51,7 +50,6 @@ export default function SettingsScreen() {
                 <View style={[styles.iconBox, { backgroundColor: theme.iconBg }]}>
                     <Ionicons name={icon as any} size={22} color={theme.primary} />
                 </View>
-                {/* Dynamic Text Color */}
                 <Text style={[styles.rowLabel, { color: theme.text }]}>{label}</Text>
             </View>
 
@@ -60,7 +58,7 @@ export default function SettingsScreen() {
                     <Switch
                         trackColor={{ false: "#e0e0e0", true: theme.primary }}
                         thumbColor={"#fff"}
-                        onValueChange={toggleTheme} // Use global toggle
+                        onValueChange={toggleTheme}
                         value={value as boolean}
                     />
                 ) : (
@@ -74,17 +72,20 @@ export default function SettingsScreen() {
     );
 
     return (
-        // Dynamic Container Background
-        <SafeAreaView style={[styles.container, { backgroundColor: theme.secondaryBg }]}>
+        // Changed: Root is now a regular View, SafeAreaView handles only the header
+        <View style={[styles.container, { backgroundColor: theme.secondaryBg }]}>
             <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
 
-            <View style={[styles.header, { backgroundColor: theme.card }]}>
-                <Text style={[styles.headerTitle, { color: theme.text }]}>Settings</Text>
-            </View>
+            {/* Header Structure exactly like ExploreScreen */}
+            <SafeAreaView edges={['top']} style={{ backgroundColor: theme.card, zIndex: 20 }}>
+                <View style={[styles.header, { backgroundColor: theme.card, borderBottomColor: theme.cardBorder }]}>
+                    <Text style={[styles.headerTitle, { color: theme.text }]}>Settings</Text>
+                </View>
+            </SafeAreaView>
 
             <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
 
-                {/* Profile Section - Dynamic Card Color */}
+                {/* Profile Card */}
                 <View style={[styles.profileCard, { backgroundColor: theme.card, shadowColor: isDarkMode ? '#000' : '#ccc' }]}>
                     <Image source={{ uri: user.photoURL }} style={styles.avatar} />
                     <View style={styles.profileInfo}>
@@ -101,7 +102,7 @@ export default function SettingsScreen() {
 
                 {/* Preferences Group */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Preferences</Text>
+                    <Text style={[styles.sectionTitle, { color: theme.text }]}>Preferences</Text>
                     <View style={[styles.sectionContent, { backgroundColor: theme.card }]}>
                         <SettingRow
                             icon="moon-outline"
@@ -126,7 +127,7 @@ export default function SettingsScreen() {
 
                 {/* Support Group */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Support</Text>
+                    <Text style={[styles.sectionTitle, { color: theme.text }]}>Support</Text>
                     <View style={[styles.sectionContent, { backgroundColor: theme.card }]}>
                         <SettingRow
                             icon="help-circle-outline"
@@ -153,17 +154,17 @@ export default function SettingsScreen() {
                 <Text style={styles.versionText}>Version 1.0.0 (Beta)</Text>
 
             </ScrollView>
-        </SafeAreaView>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
     container: { flex: 1 },
-    header: { paddingHorizontal: 20, paddingVertical: 20 },
-    headerTitle: { fontSize: 28, fontWeight: '800' },
+    // Updated header style to match Explore (borderBottomWidth: 1, paddingVertical: 15)
+    header: { paddingHorizontal: 20, paddingVertical: 15, borderBottomWidth: 1 },
+    headerTitle: { ...Typography.header },
     scrollContent: { paddingBottom: 40 },
 
-    // Profile Card
     profileCard: {
         flexDirection: 'row', alignItems: 'center',
         margin: 20, padding: 20, borderRadius: 20,
@@ -172,13 +173,16 @@ const styles = StyleSheet.create({
     avatar: { width: 70, height: 70, borderRadius: 35, backgroundColor: '#eee' },
     profileInfo: { marginLeft: 15, flex: 1 },
     userName: { fontSize: 20, fontWeight: '700' },
-    userEmail: { fontSize: 14, marginBottom: 8 },
-    editButton: { alignSelf: 'flex-start', paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8 },
-    editButtonText: { fontSize: 12, fontWeight: '600' },
+    userEmail: { ...Typography.body },
+    editButton: { alignSelf: 'flex-start', paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, marginTop: 5 },
+    editButtonText: { ...Typography.caption, fontWeight: '600' },
 
-    // Sections
     section: { marginBottom: 25 },
-    sectionTitle: { fontSize: 14, fontWeight: '600', color: '#999', marginLeft: 25, marginBottom: 10, textTransform: 'uppercase' },
+    sectionTitle: {
+        ...Typography.sectionTitle,
+        marginLeft: 25,
+        marginBottom: 10
+    },
     sectionContent: { marginHorizontal: 20, borderRadius: 16, paddingVertical: 5 },
 
     settingRow: {
@@ -188,14 +192,14 @@ const styles = StyleSheet.create({
     },
     rowLeft: { flexDirection: 'row', alignItems: 'center' },
     iconBox: { width: 36, height: 36, borderRadius: 10, justifyContent: 'center', alignItems: 'center', marginRight: 12 },
-    rowLabel: { fontSize: 16, fontWeight: '500' },
+    rowLabel: { ...Typography.cardTitle },
     rowRight: { flexDirection: 'row', alignItems: 'center' },
-    rowValue: { fontSize: 14, marginRight: 8 },
+    rowValue: { ...Typography.body, marginRight: 8 },
 
     logoutButton: {
         flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
         marginHorizontal: 20, padding: 15, borderRadius: 16, marginTop: 10
     },
-    logoutText: { fontSize: 16, fontWeight: '700', marginLeft: 8 },
-    versionText: { textAlign: 'center', marginTop: 30, color: '#ccc', fontSize: 12 }
+    logoutText: { ...Typography.cardTitle, fontWeight: '700', marginLeft: 8 },
+    versionText: { ...Typography.caption, textAlign: 'center', marginTop: 30, color: '#ccc' }
 });
