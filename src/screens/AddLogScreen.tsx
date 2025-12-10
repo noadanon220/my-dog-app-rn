@@ -1,5 +1,6 @@
+//AddLogScreen
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState } from 'react';
 import {
     Alert,
@@ -31,12 +32,20 @@ const ACTIONS = [
     { id: 'vet', label: 'Vet', icon: 'vet', color: '#FFEBEE', mainColor: '#F44336', unit: '', placeholder: 'Treatment' },
 ];
 
+type AddLogRouteParams = {
+    initialAction?: string; // 'walk' | 'food' | 'poop' | 'weight' | 'vet'
+};
+
 export default function AddLogScreen() {
-    const navigation = useNavigation();
+    const navigation = useNavigation<any>();
+    const route = useRoute<any>();
+    const { initialAction } = (route.params || {}) as AddLogRouteParams;
+
     const { addLog, selectedDogId, dogs } = useAppData();
 
-    const [step, setStep] = useState(0);
-    const [selectedActionId, setSelectedActionId] = useState<string | null>(null);
+    // אם הגענו עם initialAction → נתחיל ישר בשלב 1 ובאקשן הנכון
+    const [step, setStep] = useState(initialAction ? 1 : 0);
+    const [selectedActionId, setSelectedActionId] = useState<string | null>(initialAction ?? null);
     const [inputValue, setInputValue] = useState('');
     const [note, setNote] = useState('');
 
@@ -52,6 +61,14 @@ export default function AddLogScreen() {
 
     const handleBack = () => {
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+
+        // אם נכנסנו מראש עם initialAction, חץ אחורה יחזיר פשוט למסך הקודם
+        if (initialAction) {
+            navigation.goBack();
+            return;
+        }
+
+        // אחרת – לחזור למסך בחירת האקשן כמו קודם
         setStep(0);
         setSelectedActionId(null);
     };
