@@ -1,21 +1,13 @@
-import React, { createContext, ReactNode, useContext, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { ActivityLog, Dog, LogType, User } from '../types';
 
-// --- Typography Definitions (Based on HomeScreen) ---
+// --- Typography Definitions ---
 export const Typography = {
-    // Main Headers (e.g., "Good Morning")
     header: { fontSize: 22, fontWeight: '700' as '700' },
-
-    // Section Headers (e.g., "Daily Goals", "Recent Activity")
     sectionTitle: { fontSize: 18, fontWeight: '700' as '700' },
-
-    // Card Titles (e.g., "Walk", "Food")
     cardTitle: { fontSize: 16, fontWeight: '600' as '600' },
-
-    // Regular Body Text
     body: { fontSize: 14, fontWeight: '500' as '500' },
-
-    // Small Text (Dates, secondary notes)
     caption: { fontSize: 12, fontWeight: '400' as '400' }
 };
 
@@ -51,7 +43,7 @@ export const Colors = {
     }
 };
 
-// --- Mock Data ---
+// --- Mock Data (Used only for first launch) ---
 const MOCK_USER: User = {
     id: 'u1',
     displayName: 'Noa Cohen',
@@ -147,6 +139,9 @@ export interface ParkCheckIn {
     shareSettings: { showName: boolean; showBreed: boolean; showPhoto: boolean };
 }
 
+// Storage Key
+const STORAGE_KEY = '@dog_life_app_data_v1';
+
 interface AppDataContextType {
     user: User;
     dogs: Dog[];
@@ -169,17 +164,74 @@ interface AppDataContextType {
 const AppDataContext = createContext<AppDataContextType | undefined>(undefined);
 
 export const AppDataProvider = ({ children }: { children: ReactNode }) => {
+    // Initial states (empty or defaults before loading)
     const [user, setUser] = useState<User>(MOCK_USER);
-    const [dogs, setDogs] = useState<Dog[]>(MOCK_DOGS);
+    const [dogs, setDogs] = useState<Dog[]>([]); // Start empty to wait for load
     const [parks, setParks] = useState<Park[]>(MOCK_PARKS);
     const [checkIns, setCheckIns] = useState<ParkCheckIn[]>([]);
-
     const [selectedDogId, setSelectedDogId] = useState<string>('all');
     const [logs, setLogs] = useState<ActivityLog[]>([]);
     const [isDarkMode, setIsDarkMode] = useState(false);
 
+    // Flag to ensure we don't save empty state over existing data
+    const [isLoaded, setIsLoaded] = useState(false);
+
     const toggleTheme = () => setIsDarkMode(prev => !prev);
     const theme = isDarkMode ? Colors.dark : Colors.light;
+
+    // --- Load Data on Mount ---
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                const jsonValue = await AsyncStorage.getItem(STORAGE_KEY);
+                if (jsonValue != null) {
+                    const data = JSON.parse(jsonValue);
+                    setUser(data.user || MOCK_USER);
+                    setDogs(data.dogs || MOCK_DOGS);
+                    setLogs(data.logs || []);
+                    setCheckIns(data.checkIns || []);
+                    // Restore selected dog if it still exists
+                    if (data.selectedDogId) {
+                        setSelectedDogId(data.selectedDogId);
+                    }
+                } else {
+                    // First time launch - load mocks
+                    setDogs(MOCK_DOGS);
+                }
+            } catch (e) {
+                console.error("Failed to load data", e);
+                // Fallback
+                setDogs(MOCK_DOGS);
+            } finally {
+                setIsLoaded(true);
+            }
+        };
+        loadData();
+    }, []);
+
+    // --- Save Data on Change ---
+    useEffect(() => {
+        if (!isLoaded) return; // Don't save before loading completes
+
+        const saveData = async () => {
+            try {
+                const dataToSave = {
+                    user,
+                    dogs,
+                    logs,
+                    checkIns,
+                    selectedDogId
+                };
+                await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+            } catch (e) {
+                console.error("Failed to save data", e);
+            }
+        };
+
+        // Debounce slightly or just save on every change
+        saveData();
+    }, [user, dogs, logs, checkIns, selectedDogId, isLoaded]);
+
 
     const selectDog = (dogId: string) => setSelectedDogId(dogId);
 
