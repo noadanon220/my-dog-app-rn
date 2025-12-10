@@ -56,7 +56,7 @@ const MOCK_DOGS: any[] = [
         id: '1',
         name: 'Rexi',
         gender: 'male',
-        colors: ['Gold'],
+        colors: ['#FFCC80'], // Example Gold color
         weight: 28,
         isSterilized: true,
         breed: 'Golden Retriever',
@@ -74,7 +74,7 @@ const MOCK_DOGS: any[] = [
         id: '2',
         name: 'Luna',
         gender: 'female',
-        colors: ['Black', 'White'],
+        colors: ['#80D8FF'], // Example Blue color
         weight: 22,
         isSterilized: true,
         breed: 'Border Collie',
@@ -155,7 +155,8 @@ interface AppDataContextType {
     selectDog: (dogId: string) => void;
     addLog: (type: LogType, dogId: string, details?: any) => void;
     getRelevantLogs: () => ActivityLog[];
-    addDog: (name: string, gender: 'male' | 'female', weight: number, breed?: string) => void;
+    // UPDATED: Now accepts optional imageUri and color
+    addDog: (name: string, gender: 'male' | 'female', weight: number, breed?: string, imageUri?: string, color?: string) => void;
     updateDog: (dogId: string, updates: Partial<any>) => void;
     updateUser: (updates: Partial<User>) => void;
     addCheckIn: (parkId: string, dogId: string, time: string, shareSettings: any) => void;
@@ -228,7 +229,6 @@ export const AppDataProvider = ({ children }: { children: ReactNode }) => {
             }
         };
 
-        // Debounce slightly or just save on every change
         saveData();
     }, [user, dogs, logs, checkIns, selectedDogId, isLoaded]);
 
@@ -252,18 +252,17 @@ export const AppDataProvider = ({ children }: { children: ReactNode }) => {
         return logs.filter(log => log.dogId === selectedDogId);
     };
 
-    const addDog = (name: string, gender: 'male' | 'female', weight: number, breed?: string) => {
+    // UPDATED: No longer forcing a default image. imageUri can be null.
+    const addDog = (name: string, gender: 'male' | 'female', weight: number, breed?: string, imageUri?: string, color?: string) => {
         const newDog: any = {
             id: Date.now().toString(),
             name,
             gender,
             weight,
             breed: breed || 'Unknown Mix',
-            colors: [],
+            colors: color ? [color] : [], // Use the selected color
             isSterilized: false,
-            imageUri: gender === 'male'
-                ? 'https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?q=80&w=600&auto=format&fit=crop'
-                : 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?q=80&w=600&auto=format&fit=crop',
+            imageUri: imageUri || null, // If null, the UI will show an icon
             coverImageUri: 'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=1000&auto=format&fit=crop',
             chipNumber: '', birthDate: '', foodHabits: { foodBrand: '', dailyAmount: 0, unit: 'gr' }, allergies: '', energyLevel: '', socialInfo: ''
         };
