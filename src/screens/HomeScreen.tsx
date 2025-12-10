@@ -27,12 +27,10 @@ const isToday = (dateString: string) => {
 const QUICK_ACTIONS = [
     { id: 'walk', label: 'Walk', icon: 'walk', color: '#4CAF50', bgColor: '#E8F5E9' },
     { id: 'food', label: 'Food', icon: 'food', color: '#FF9800', bgColor: '#FFF3E0' },
-    // Poop action with brown shades (Updated previously)
+    // Poop action with brown shades
     { id: 'poop', label: 'Poop', icon: 'poop', color: '#743D2B', bgColor: '#EFE5DD' },
     { id: 'weight', label: 'Weight', icon: 'default', color: '#9C27B0', bgColor: '#F3E5F5' },
     // Updated Vet action: Red shades
-    // Icon: Medical Red (#D32F2F)
-    // Background: Very Light Red (#FFEBEE)
     { id: 'vet', label: 'Vet', icon: 'vet', color: '#D32F2F', bgColor: '#FFEBEE' },
 ];
 
@@ -50,6 +48,9 @@ export default function HomeScreen() {
 
     const relevantLogs = getRelevantLogs();
     const currentDog = dogs.find(d => d.id === selectedDogId);
+
+    // Determine the active color ONLY for the progress bar and ring
+    const activeColor = (currentDog?.colors?.[0]) || theme.primary;
 
     const stats = useMemo(() => {
         const todaysLogs = relevantLogs.filter(log => isToday(log.timestamp));
@@ -72,6 +73,7 @@ export default function HomeScreen() {
     };
 
     const renderDogItem = ({ item }: { item: any }) => {
+        // Special case for "Add" button
         if (item.id === 'add_new') {
             return (
                 <TouchableOpacity style={styles.dogItem} onPress={() => navigation.navigate('AddDog')}>
@@ -84,7 +86,13 @@ export default function HomeScreen() {
         }
 
         const isSelected = selectedDogId === item.id;
+        // Check if image exists, otherwise show fallback icon
         const imageSource = item.imageUri ? { uri: item.imageUri } : null;
+
+        // Use dog's specific color for the ring if available
+        const selectionColor = (item.colors && item.colors.length > 0)
+            ? item.colors[0]
+            : theme.primary;
 
         return (
             <TouchableOpacity
@@ -95,17 +103,24 @@ export default function HomeScreen() {
                 <View style={[
                     styles.dogImageContainer,
                     { backgroundColor: theme.secondaryBg },
-                    isSelected && { borderColor: theme.primary, borderWidth: 2 }
+                    // Apply the custom color to the border only when selected
+                    isSelected && { borderColor: selectionColor, borderWidth: 3 }
                 ]}>
                     {imageSource ? (
                         <Image source={imageSource} style={styles.dogImage} />
                     ) : (
                         <View style={[styles.allDogsIcon, { backgroundColor: theme.card }]}>
-                            <Ionicons name="apps" size={24} color={isSelected ? theme.primary : '#999'} />
+                            {/* Show 'apps' for All button, 'camera' for dogs without photo */}
+                            <Ionicons
+                                name={item.id === 'all' ? "apps" : "camera-outline"}
+                                size={24}
+                                color={isSelected ? selectionColor : '#999'}
+                            />
                         </View>
                     )}
                 </View>
-                <Text style={[styles.dogName, isSelected ? { color: theme.primary, fontWeight: '700' } : { color: theme.subText }]}>
+                {/* Text color matches the selection ring */}
+                <Text style={[styles.dogName, isSelected ? { color: selectionColor, fontWeight: '700' } : { color: theme.subText }]}>
                     {item.name}
                 </Text>
             </TouchableOpacity>
@@ -170,9 +185,11 @@ export default function HomeScreen() {
                             style={[styles.profileLinkButton, { backgroundColor: theme.secondaryBg }]}
                             onPress={() => navigation.navigate('DogProfile')}
                         >
+                            {/* Reverted to theme.primary (not activeColor) */}
                             <Text style={[styles.profileLinkText, { color: theme.primary }]}>
                                 View {currentDog.name}'s Profile
                             </Text>
+                            {/* Reverted to theme.primary */}
                             <Ionicons name="chevron-forward" size={16} color={theme.primary} />
                         </TouchableOpacity>
                     </View>
@@ -183,6 +200,7 @@ export default function HomeScreen() {
                     <View style={styles.cardsRow}>
                         <View style={[styles.summaryCard, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
                             <View style={styles.cardHeader}>
+                                {/* Reverted to theme.primary */}
                                 <Ionicons name="footsteps" size={20} color={theme.primary} />
                                 <Text style={styles.cardLabel}>Walk</Text>
                             </View>
@@ -191,7 +209,8 @@ export default function HomeScreen() {
                             </Text>
                             <Text style={styles.cardSubtext}>Goal: 60 min</Text>
                             <View style={[styles.progressBarBg, { backgroundColor: theme.secondaryBg }]}>
-                                <View style={[styles.progressBarFill, { width: `${stats.walkProgress * 100}%`, backgroundColor: theme.primary }]} />
+                                {/* Progress bar retains the dynamic dog color */}
+                                <View style={[styles.progressBarFill, { width: `${stats.walkProgress * 100}%`, backgroundColor: activeColor }]} />
                             </View>
                         </View>
 
